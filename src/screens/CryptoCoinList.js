@@ -1,15 +1,24 @@
 import React from 'react'
 import { Alert, Platform, Image, View, Text, StyleSheet, Button } from 'react-native';
-
+import { firebaseAuth } from '../../environment/firebase';
 
 export default class CryptoCoinList extends React.Component {
 constructor(props) {
         super(props);
         this.state = { currentUser: null, errorMessage: null }
  }
+
+componentDidMount() {
+        const { currentUser } = firebaseAuth;
+        this.setState({ currentUser })
+    }
 onPressButton = () => {
- console.log('PressButton');
+console.log('PressButton')
+  firebaseAuth.signOut()
+  .then(() => this.props.navigation.navigate('Login'))
+  .catch(error => this.setState({ errorMessage: error.message }));
 }
+
 render() {
 const { currentUser } = this.state
 return (

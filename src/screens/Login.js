@@ -1,12 +1,14 @@
 import React from 'react';
 import { View, Text, TextInput, Button, StyleSheet, ImageBackground, Image, Dimensions, TouchableOpacity } from 'react-native';
+import { firebaseAuth } from '../../environment/firebase';
 
 export default class Login extends React.Component {
 state = { email: '', password: '', errorMessage: null }
 handleLogin = () => {
-// TODO: Firebase stuff...
-console.log('handleLogin')
-}
+    firebaseAuth.signInWithEmailAndPassword(this.state.email, this.state.password)
+    .then(() => this.props.navigation.navigate('CryptoCoinList'))
+    .catch(error => this.setState({ errorMessage: error.message }));
+  }
 render() {
 return (
    <View style={styles.container}>
