@@ -12,3 +12,4 @@ const firebaseConfig = {
     measurementId: "G-TH5506R6YC"
     };
     const firebaseApp = firebase.initializeApp(firebaseConfig);
+    export const firebaseAuth = firebaseApp.auth();
