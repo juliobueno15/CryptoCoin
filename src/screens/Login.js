@@ -5,10 +5,32 @@ import { firebaseAuth } from '../../environment/firebase';
 export default class Login extends React.Component {
 state = { email: '', password: '', errorMessage: null }
 handleLogin = () => {
-    firebaseAuth.signInWithEmailAndPassword(this.state.email, this.state.password)
-    .then(() => this.props.navigation.navigate('CryptoCoinList'))
-    .catch(error => this.setState({ errorMessage: error.message }));
-  }
+  return fetch('http://10.0.2.2:5000/login' , {
+     method: 'POST',
+     headers: {
+       'Accept': 'application/json',
+       'Content-Type': 'application/json'
+     },
+     body: JSON.stringify({
+      'email': this.state.email,
+      'password': this.state.password
+ })
+   })
+   .then((response) => response.json())
+     .then((responseJson) => {
+       console.log('the response is:', responseJson.login);
+      if(responseJson.login){
+        this.props.navigation.navigate('CryptoCoinList')
+      }
+      else{
+        this.setState({ errorMessage: "usuario nao encontrado" })
+      }
+    })
+    // firebaseAuth.signInWithEmailAndPassword(this.state.email, this.state.password)
+    // .then(() => this.props.navigation.navigate('CryptoCoinList'))
+    // .catch(error => this.setState({ errorMessage: error.message }));
+  };
+
 render() {
 return (
    <View style={styles.container}>
