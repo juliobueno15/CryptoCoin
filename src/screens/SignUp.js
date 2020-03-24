@@ -3,12 +3,30 @@ import { View, Text, TextInput, Button, StyleSheet, ImageBackground, Image, Dime
 import { firebaseAuth } from '../../environment/firebase';
 
 export default class SignUp extends React.Component {
-    state = { email: '', password: '', errorMessage: null }
+    state = { email: '',password: '', password: '', errorMessage: null }
     handleSignUp = () => {
-        console.log('handleSignUp')
-        firebaseAuth.createUserWithEmailAndPassword(this.state.email,this.state.password)
-        .then(() => this.props.navigation.navigate('CryptoCoinList'))
-        .catch(error => this.setState({ errorMessage: error.message }));
+        return fetch('http://10.0.2.2:5000/signUp' , {
+     method: 'POST',
+     headers: {
+       'Accept': 'application/json',
+       'Content-Type': 'application/json'
+     },
+     body: JSON.stringify({
+      'username': this.state.username,
+      'email': this.state.email,
+      'password': this.state.password
+ })
+   })
+   .then((response) => response.json())
+     .then((responseJson) => {
+       console.log('the response is:', responseJson.signUp);
+      if(responseJson.signUp){
+        this.props.navigation.navigate('CryptoCoinList')
+      }
+      else{
+        this.setState({ errorMessage: "usuario nao encontrado" })
+      }
+    })
     }
     render() {
         return (
@@ -20,6 +38,13 @@ export default class SignUp extends React.Component {
          <Text style={{ color: 'red' }}>
            {this.state.errorMessage}
          </Text>}
+         <TextInput
+          placeholder="Username"
+          autoCapitalize="none"
+          style={styles.textInput}
+          onChangeText={username => this.setState({ username })}
+          value={this.state.username}
+          />
          <TextInput
           placeholder="Email"
           autoCapitalize="none"

@@ -3,7 +3,7 @@ import { View, Text, TextInput, Button, StyleSheet, ImageBackground, Image, Dime
 import { firebaseAuth } from '../../environment/firebase';
 
 export default class Login extends React.Component {
-state = { email: '', password: '', errorMessage: null }
+state = { username: '', password: '', errorMessage: null }
 handleLogin = () => {
   return fetch('http://10.0.2.2:5000/login' , {
      method: 'POST',
@@ -12,7 +12,7 @@ handleLogin = () => {
        'Content-Type': 'application/json'
      },
      body: JSON.stringify({
-      'email': this.state.email,
+      'username': this.state.username,
       'password': this.state.password
  })
    })
@@ -42,11 +42,11 @@ return (
        {this.state.errorMessage}
        </Text>}
        <TextInput
-       placeholder="Email"
+       placeholder="Username"
        autoCapitalize="none"
        style={styles.textInput}
-       onChangeText={email => this.setState({ email })}
-       value={this.state.email}/>
+       onChangeText={username => this.setState({ username })}
+       value={this.state.username}/>
        <TextInput
        secureTextEntry
        placeholder="Password"
@@ -72,7 +72,7 @@ container: {
  height: heightConst - 50,
  justifyContent: 'center',
  alignItems: 'center',
- backgroundColor: '#fff'
+ backgroundColor: '#444444'
 },
 headingSection: {
  borderColor: 1,

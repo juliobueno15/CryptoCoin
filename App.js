@@ -11,7 +11,7 @@ const SwitchNavigator = createSwitchNavigator(
     CryptoCoinList: CryptoCoinList
   },
   {
-    initialRouteName: 'SignUp',
+    initialRouteName: 'Login',
     headerMode: 'none'
   }
 )
