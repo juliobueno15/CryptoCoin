@@ -59,10 +59,11 @@ return (
           <Text style={styles.buttonText}>Log In</Text>
         </View>
       </TouchableOpacity>
-     <Button
-     title="Don't have an account? Sign Up" color="transparent"
-     onPress={() => this.props.navigation.navigate('SignUp')}
-     />
+      <TouchableOpacity onPress={() => this.props.navigation.navigate('SignUp')}>
+        <View style={styles.signUpBtn}>
+          <Text style={styles.buttonText}>Don't have an account? Sign Up</Text>
+        </View>
+      </TouchableOpacity>
   </View>
 )}
 }
@@ -86,19 +87,23 @@ heading: {
  marginBottom: 10
 }, 
 textInput: {
- height: 40,
+ backgroundColor: '#ffffff',
+ borderRadius: 5,
+ height: 50,
  width: '90%',
- borderColor: '#00000000',
- borderWidth: 1,
+ fontSize: 20,
+ borderColor: '#00FFCC',
+ borderWidth: 2,
  marginTop: 8,
- color: '#fff'
+ color: '#000'
 },
 loginBtn: {
+ fontSize: 50,
  borderRadius: 5,
  marginBottom: 5,
  backgroundColor: 'transparent',
  borderWidth: 0,
- width: 100,
+ width: 150,
  height: 40,
  overflow: 'hidden',
  alignItems: 'center',
@@ -111,7 +116,27 @@ loginBtn: {
  shadowOffset : { width: 1, height: 13},
  backgroundColor: '#00FFCC' 
 },
+signUpBtn: {
+  
+  borderRadius: 5,
+  marginBottom: 5,
+  backgroundColor: 'transparent',
+  borderWidth: 0,
+  width: 250,
+  height: 40,
+  overflow: 'hidden',
+  alignItems: 'center',
+  justifyContent: 'center',
+  marginTop: 10,
+  shadowColor: 'rgba(0, 0, 0, 0.1)',
+  shadowOpacity: 0.8,
+  elevation: 6,
+  shadowRadius: 15,
+  shadowOffset : { width: 1, height: 13},
+  backgroundColor: '#00FFCC' 
+ },
 buttonText: {
+fontSize: 15,
 color: '#222',
 textAlign: 'center'}
 })

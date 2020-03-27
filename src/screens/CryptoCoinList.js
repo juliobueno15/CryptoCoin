@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Alert, FlatList, Platform, Image, View, Text, StyleSheet, Button } from 'react-native';
+import { Alert, FlatList, Platform, Image, View, Text, StyleSheet, Button , TouchableOpacity} from 'react-native';
 import { List, ListItem, SearchBar } from "react-native-elements";
 import _ from "lodash";
 
@@ -51,30 +51,48 @@ getCriptoList = _.debounce(() => {
     // .catch(error => this.setState({ errorMessage: error.message }));
   },300);
 
-getSpecificCoin = _.debounce(() => {
-  return fetch('http://10.0.2.2:5000/topList' , {
-     method: 'GET',
+getSpecificCoin =_.debounce((criptoCoin) => {
+  this.setState({ isLoading: true})
+
+  return fetch('http://10.0.2.2:5000/coinFullData' , {
+     method: 'POST',
      headers: {
-       'Accept': 'application/json'
-     }
-   }) 
+       'Accept': 'application/json',
+       'Content-Type': 'application/json'
+     },
+     body: JSON.stringify({
+      'coin': criptoCoin
+ })
+   })
    .then((response) => response.json())
      .then((responseJson) => {
-       console.log('the response is:', responseJson.data);
-       this.setState({
-         criptoList : responseJson.data ,
-         isLoading : false
-       })
+       console.log('the response is:', responseJson);
+      if(responseJson.found){
+        console.log(responseJson)
+        this.setState({
+          criptoList : responseJson.data,
+          isLoading: false
+        })
+      }
+      else{
+        this.setState({ 
+          errorMessage: "moeda nao encontrada",
+          isLoading: false
+        })
+      }
     })
-    // .catch(error => this.setState({ errorMessage: error.message }));
-  },300);
+  },500);
 
-Coin(name,price) {
+Coin = (name,price) =>{
   return (
-    <View style={styles.item}>
-      <Text style={styles.title}>{name}</Text>
-      <Text style={styles.title}>{price}</Text>
-    </View>
+    <TouchableOpacity onPress={() => this.props.navigation.navigate('HistoricalData', {
+      coin: name 
+    })}>
+      <View style={styles.item}>
+      <Text style={styles.name}>Name: {name}</Text>
+        <Text style={styles.price}>Price: {price}</Text>
+      </View>
+    </TouchableOpacity>
   );
 }
 
@@ -106,18 +124,9 @@ updateSearch = (search) =>{
       criptoList : specificCoin
     })
     if(specificCoin.length == 0){
-      console.log("entrou aqui")
+      console.log(search.toUpperCase());
+      this.getSpecificCoin(search.toUpperCase())
     }
-
-  // this.setState({search}),()=>{
-  //   if('' != query){
-  //     this.state.criptoList = this.state.criptoTopList.filter( function(item){
-  //       return item.name.includes(search);
-  //     }).map(function({name,price}){
-  //       return {name,price}
-  //     });
-  //   }; 
-  // }
 }
 
 
@@ -151,7 +160,8 @@ const styles = StyleSheet.create({
 container: {
  flex: 1,
  justifyContent: 'center',
- alignItems: 'center'
+ alignItems: 'center',
+ backgroundColor: '#333',
 },
 coin: {
   flex: 1,
@@ -164,10 +174,17 @@ coin: {
  item: {
   backgroundColor: '#f9c2ff',
   padding: 20,
-  marginVertical: 8,
-  marginHorizontal: 16,
+  borderRadius: 5,
+  marginVertical: 10,
+  marginHorizontal: 10,   
 },
-title: {
-  fontSize: 32,
+name: {
+  fontSize: 25,
+},
+fullName: {
+  fontSize: 20,
+},
+price: {
+  fontSize: 28,
 }
 })

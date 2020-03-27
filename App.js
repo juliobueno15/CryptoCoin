@@ -3,12 +3,14 @@ import { createSwitchNavigator, createAppContainer } from 'react-navigation';
 import SignUp from './src/screens/SignUp.js';
 import Login from './src/screens/Login.js';
 import CryptoCoinList from './src/screens/CryptoCoinList.js';
+import HistoricalData from './src/screens/HistoricalData.js';
 
 const SwitchNavigator = createSwitchNavigator(
   {
     SignUp: SignUp,
     Login: Login,
-    CryptoCoinList: CryptoCoinList
+    CryptoCoinList: CryptoCoinList,
+    HistoricalData : HistoricalData
   },
   {
     initialRouteName: 'Login',
