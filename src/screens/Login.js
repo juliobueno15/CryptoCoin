@@ -1,11 +1,13 @@
 import React from 'react';
 import { View, Text, TextInput, Button, StyleSheet, ImageBackground, Image, Dimensions, TouchableOpacity } from 'react-native';
-import { firebaseAuth } from '../../environment/firebase';
+
+const GLOBAL = require('../Constants');
+
 
 export default class Login extends React.Component {
 state = { username: '', password: '', errorMessage: null }
 handleLogin = () => {
-  return fetch('http://10.0.2.2:5000/login' , {
+  return fetch(GLOBAL.BASE_URL+'login' , {
      method: 'POST',
      headers: {
        'Accept': 'application/json',
@@ -32,6 +34,7 @@ handleLogin = () => {
   };
 
 render() {
+
 return (
    <View style={styles.container}>
     <View style={styles.headingSection}>
@@ -117,7 +120,6 @@ loginBtn: {
  backgroundColor: '#00FFCC' 
 },
 signUpBtn: {
-  
   borderRadius: 5,
   marginBottom: 5,
   backgroundColor: 'transparent',

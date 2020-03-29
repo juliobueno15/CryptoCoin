@@ -1,7 +1,10 @@
 import React, { Component } from "react";
-import { Alert, FlatList, Platform, Image, View, Text, StyleSheet, Button , TouchableOpacity} from 'react-native';
+import { Alert, FlatList, Platform, Image, View, Text, StyleSheet, Button , ActivityIndicator, TouchableOpacity} from 'react-native';
 import { List, ListItem, SearchBar } from "react-native-elements";
 import _ from "lodash";
+const GLOBAL = require('../Constants');
+import Header from "../components/Header";
+
 
 export default class HistoricalData extends React.Component {
 
@@ -23,7 +26,7 @@ componentDidMount(){
 getHistoricalDate =_.debounce((criptoCoin) => {
   this.setState({ isLoading: true})
 
-  return fetch('http://10.0.2.2:5000/historical' , {
+  return fetch(GLOBAL.BASE_URL+'historical' , {
      method: 'POST',
      headers: {
        'Accept': 'application/json',
@@ -52,12 +55,15 @@ getHistoricalDate =_.debounce((criptoCoin) => {
     })
   },500);
 
-coinDate = (date,price) =>{
+coinDate = (date,high,low,open,close) =>{
   return (
     <TouchableOpacity onPress={() => console.log("pressed")}>
-      <View style={styles.item}>
+      <View style={styles.historicalDate}>
         <Text style={styles.name}>{date}</Text>
-        <Text style={styles.price}>Price: {price}</Text>
+        <Text style={styles.price}>High: R${high}</Text>
+        <Text style={styles.price}>Low: R${low}</Text>
+        <Text style={styles.price}>Open: R${open}</Text>
+        <Text style={styles.price}>Close: R${close}</Text>
       </View>
     </TouchableOpacity>
   );
@@ -65,24 +71,43 @@ coinDate = (date,price) =>{
 
 cryptoCoinHistorical = () => {
   return (
+    <>
+    {Header("Historical Data (" + this.state.coin + ")","CryptoCoinList",this.props)}
     <View style={styles.container}>
       <FlatList
           data={this.state.coinDate}
-          renderItem={({ item }) => this.coinDate(item.date,item.close)}
+          renderItem={({ item }) => this.coinDate(item.date,item.high,item.low,item.open,item.close)}
           keyExtractor={item => item.date}
+          ListFooterComponent={this.renderFooter}
       />
     </View>
+  </>
   )
 }
+
+renderFooter = () => {
+  return (
+    <View
+      style={styles.footer}
+    >
+    </View>
+  );
+};
 
 render() {
 
 const { currentUser } = this.state
   if(this.state.isLoading){
     return (
-      <View style={styles.container}>
-        <Text>is Loading</Text>
-      </View>
+      <>
+        {Header("Historical Data (" + this.state.coin + ")","CryptoCoinList",this.props)}
+        <View style={styles.loading}>
+        <FlatList
+          ListHeaderComponent = {this.renderHeader}
+        />
+          <Text>is Loading</Text>
+        </View>
+      </>
       )
   }
   else{
@@ -92,18 +117,21 @@ const { currentUser } = this.state
 }
 const styles = StyleSheet.create({
 container: {
- flex: 1,
- justifyContent: 'center',
- alignItems: 'center',
- backgroundColor: '#333',
+  height:'100%',
+  width:'100%',
+ //  justifyContent: 'center',
+ //  alignItems: 'center',
+  backgroundColor: '#333',
 },
-coin: {
-  flex: 1,
-  margin : 10,
+historicalDate: {
+  width:'90%',
+  marginVertical: '2%',
+  marginHorizontal: '5%',
+  padding: 10,
+  borderRadius: 5,
   justifyContent: 'center',
   alignItems: 'center',
-  borderBottomWidth: 1,
-  borderBottomColor: '#eee'
+  backgroundColor: '#f9c2ff',
  },
  item: {
   backgroundColor: '#f9c2ff',
@@ -112,6 +140,13 @@ coin: {
   marginVertical: 10,
   marginHorizontal: 10,   
 },
+loading: {
+  height:'100%',
+  width:'100%',
+  // justifyContent: 'center',
+  // alignItems: 'center',
+  backgroundColor: '#333',
+ },
 name: {
   fontSize: 25,
 },
@@ -120,5 +155,8 @@ fullName: {
 },
 price: {
   fontSize: 28,
+},
+footer:{
+  paddingVertical: 20
 }
 })

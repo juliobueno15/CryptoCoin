@@ -1,11 +1,13 @@
 import React from 'react';
 import { View, Text, TextInput, Button, StyleSheet, ImageBackground, Image, Dimensions, TouchableOpacity } from 'react-native';
 import { firebaseAuth } from '../../environment/firebase';
+const GLOBAL = require('../Constants');
+
 
 export default class SignUp extends React.Component {
     state = { email: '',password: '', password: '', errorMessage: null }
     handleSignUp = () => {
-        return fetch('http://10.0.2.2:5000/signUp' , {
+        return fetch(GLOBAL.BASE_URL+'signUp' , {
      method: 'POST',
      headers: {
        'Accept': 'application/json',
@@ -60,15 +62,16 @@ export default class SignUp extends React.Component {
            onChangeText={password => this.setState({ password })}
            value={this.state.password}
            />
-         <TouchableOpacity onPress={this.handleSignUp}>
-           <View style={styles.signupBtn}>
-              <Text style={styles.buttonText}>Sign Up</Text>
-           </View>
-         </TouchableOpacity>
-         <Button color="transparent"
-         title="Already have an account? Login "
-         onPress={() => this.props.navigation.navigate('Login')}
-          />
+            <TouchableOpacity onPress={this.handleSignUp}>
+              <View style={styles.loginBtn}>
+                <Text style={styles.buttonText}>Sign Up</Text>
+              </View>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => this.props.navigation.navigate('Login')}>
+              <View style={styles.signUpBtn}>
+                <Text style={styles.buttonText}>Already have an account? Login</Text>
+              </View>
+            </TouchableOpacity>
       </View>
         )
     }
@@ -76,10 +79,10 @@ export default class SignUp extends React.Component {
 const heightConst = Dimensions.get('screen').height;
 const styles = StyleSheet.create({
     container: {
-        height: heightConst - 50,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: '#111111'
+      height: heightConst - 50,
+      justifyContent: 'center',
+      alignItems: 'center',
+      backgroundColor: '#444444'
     },
     headingSection: {
         borderColor: 1,
@@ -93,28 +96,55 @@ const styles = StyleSheet.create({
         marginBottom: 10
     },
     textInput: {
-        height: 40,
-        width: '90%',
-        borderColor: '#fff',
-        borderWidth: 1,
-        marginTop: 8,
-        color: '#fff'
-    },
-    signupBtn: {
-        borderRadius: 5,
-        marginBottom: 5,
-        backgroundColor: 'transparent',
-        borderWidth: 1,
-        borderColor: '#fff',
-        width: 100,
-        height: 35,
-        overflow: 'hidden',
-        alignItems: 'center',
-        justifyContent: 'center',
-        marginTop: 10
-    },
-    buttonText: {
-        color: '#fff',
-        textAlign: 'center'
-    }
+      backgroundColor: '#ffffff',
+      borderRadius: 5,
+      height: 50,
+      width: '90%',
+      fontSize: 20,
+      borderColor: '#00FFCC',
+      borderWidth: 2,
+      marginTop: 8,
+      color: '#000'
+     },
+     loginBtn: {
+      fontSize: 50,
+      borderRadius: 5,
+      marginBottom: 5,
+      backgroundColor: 'transparent',
+      borderWidth: 0,
+      width: 150,
+      height: 40,
+      overflow: 'hidden',
+      alignItems: 'center',
+      justifyContent: 'center',
+      marginTop: 10,
+      shadowColor: 'rgba(0, 0, 0, 0.1)',
+      shadowOpacity: 0.8,
+      elevation: 6,
+      shadowRadius: 15,
+      shadowOffset : { width: 1, height: 13},
+      backgroundColor: '#00FFCC' 
+     },
+     signUpBtn: {
+       borderRadius: 5,
+       marginBottom: 5,
+       backgroundColor: 'transparent',
+       borderWidth: 0,
+       width: 250,
+       height: 40,
+       overflow: 'hidden',
+       alignItems: 'center',
+       justifyContent: 'center',
+       marginTop: 10,
+       shadowColor: 'rgba(0, 0, 0, 0.1)',
+       shadowOpacity: 0.8,
+       elevation: 6,
+       shadowRadius: 15,
+       shadowOffset : { width: 1, height: 13},
+       backgroundColor: '#00FFCC' 
+      },
+     buttonText: {
+     fontSize: 15,
+     color: '#222',
+     textAlign: 'center'}
 })

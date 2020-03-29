@@ -5,6 +5,7 @@ import Login from './src/screens/Login.js';
 import CryptoCoinList from './src/screens/CryptoCoinList.js';
 import HistoricalData from './src/screens/HistoricalData.js';
 
+
 const SwitchNavigator = createSwitchNavigator(
   {
     SignUp: SignUp,
@@ -13,8 +14,8 @@ const SwitchNavigator = createSwitchNavigator(
     HistoricalData : HistoricalData
   },
   {
-    initialRouteName: 'Login',
-    headerMode: 'none'
+    initialRouteName: 'Login'
+    // headerMode: 'none'
   }
 )
 

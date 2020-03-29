@@ -1,7 +1,11 @@
 import React, { Component } from "react";
-import { Alert, FlatList, Platform, Image, View, Text, StyleSheet, Button , TouchableOpacity} from 'react-native';
+import { Alert, FlatList, Platform, Image, View, Text, StyleSheet, Button , TouchableOpacity, ActivityIndicator,} from 'react-native';
 import { List, ListItem, SearchBar } from "react-native-elements";
 import _ from "lodash";
+import Header from "../components/Header";
+
+const GLOBAL = require('../Constants');
+
 
 export default class CryptoCoinList extends React.Component {
 constructor(props) {
@@ -16,24 +20,12 @@ constructor(props) {
         }
  }
 
-componentDidMount() {
-        const { currentUser } = firebaseAuth;
-        this.setState({ currentUser })
-    }
-    
-onPressButton = () => {
-console.log('PressButton')
-  firebaseAuth.signOut()
-  .then(() => this.props.navigation.navigate('Login'))
-  .catch(error => this.setState({ errorMessage: error.message }));
-}
-
 componentDidMount(){
   this.getCriptoList();
 }
 
 getCriptoList = _.debounce(() => {
-  return fetch('http://10.0.2.2:5000/topList' , {
+  return fetch(GLOBAL.BASE_URL+'topList' , {
      method: 'GET',
      headers: {
        'Accept': 'application/json'
@@ -54,7 +46,7 @@ getCriptoList = _.debounce(() => {
 getSpecificCoin =_.debounce((criptoCoin) => {
   this.setState({ isLoading: true})
 
-  return fetch('http://10.0.2.2:5000/coinFullData' , {
+  return fetch(GLOBAL.BASE_URL+'coinFullData' , {
      method: 'POST',
      headers: {
        'Accept': 'application/json',
@@ -88,7 +80,7 @@ Coin = (name,price) =>{
     <TouchableOpacity onPress={() => this.props.navigation.navigate('HistoricalData', {
       coin: name 
     })}>
-      <View style={styles.item}>
+      <View style={styles.coin}>
       <Text style={styles.name}>Name: {name}</Text>
         <Text style={styles.price}>Price: {price}</Text>
       </View>
@@ -98,14 +90,23 @@ Coin = (name,price) =>{
 
 cryptoCoinList = () => {
   return (
+    <>
+    {Header("Top List","Login",this.props)}
     <View style={styles.container}>
+      <View style={styles.list}>
       <FlatList
           ListHeaderComponent = {this.renderHeader}
           data={this.state.criptoList}
           renderItem={({ item }) => this.Coin(item.name,item.price)}
           keyExtractor={item => item.name}
+          refreshing = {this.state.isLoading}
+          onRefresh = {() => this.getCriptoList()}
+          ListFooterComponent={this.renderFooter}
       />
+      </View>
     </View>
+    </>
+
   )
 }
 
@@ -127,57 +128,83 @@ updateSearch = (search) =>{
       console.log(search.toUpperCase());
       this.getSpecificCoin(search.toUpperCase())
     }
-}
+}        
 
 
 renderHeader = () => {
   return <SearchBar
-        placeholder="Type Here..."
+        placeholder="Digite a sigla da cripto moeda"
         lightTheme
+        style={styles.searchBar}
         round
         editable = {true}
-        value={this.setState}
+        value={this.state.query}
         onChangeText={this.updateSearch}
   />
 };
 
+renderFooter = () => {
+  return (
+    <View style={styles.footer}>
+    </View>
+  );
+};
+
 render() {
-// this.cryptoCoinList()
-const { currentUser } = this.state
+
+// const { currentUser } = this.state
+  console.log("resetado")
+  console.log(this.state)
   if(this.state.isLoading){
     return (
-      <View style={styles.container}>
-        <Text>is Loading</Text>
-      </View>
+      <>
+        {Header("Top List","Login",this.props)}
+        <View style={styles.loading}>
+        <FlatList
+          ListHeaderComponent = {this.renderHeader}
+        />
+          <Text>is Loading</Text>
+        </View>
+      </>
       )
   }
   else{
     return this.cryptoCoinList();
-    }
-}
+    } 
+  }
 }
 const styles = StyleSheet.create({
 container: {
- flex: 1,
- justifyContent: 'center',
- alignItems: 'center',
+ height:'100%',
+ width:'100%',
+//  justifyContent: 'center',
+//  alignItems: 'center',
  backgroundColor: '#333',
 },
+loading: {
+  height:'100%',
+  width:'100%',
+  // justifyContent: 'center',
+  // alignItems: 'center',
+  backgroundColor: '#333',
+ },
+list:{
+//  justifyContent: 'center',
+//  alignItems: 'center'
+},
+searchBar:{
+//  width:'90%',
+},
 coin: {
-  flex: 1,
-  margin : 10,
+  width:'90%',
+  marginVertical: '2%',
+  marginHorizontal: '5%',
+  padding: 10,
+  borderRadius: 5,
   justifyContent: 'center',
   alignItems: 'center',
-  borderBottomWidth: 1,
-  borderBottomColor: '#eee'
+  backgroundColor: '#4be3c2',
  },
- item: {
-  backgroundColor: '#f9c2ff',
-  padding: 20,
-  borderRadius: 5,
-  marginVertical: 10,
-  marginHorizontal: 10,   
-},
 name: {
   fontSize: 25,
 },
@@ -186,5 +213,8 @@ fullName: {
 },
 price: {
   fontSize: 28,
+},
+footer:{
+  paddingVertical: 30
 }
 })
